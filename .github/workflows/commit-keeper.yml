@@ -22,7 +22,7 @@ jobs:
         run: |
           today_utc=$(date -u +"%Y-%m-%d")
 
-          since_date=$(date -u -d "$today_utc 00:00 +0530" --iso-8601=seconds)
+          since_date=$(date -u -d "$today_utc 18:30 -1 day" --iso-8601=seconds)
           commit_count=$(git rev-list --count --since="$since_date" HEAD)
           if [ "$commit_count" -eq 0 ]; then
             echo "commit_needed=true" >> $GITHUB_OUTPUT
