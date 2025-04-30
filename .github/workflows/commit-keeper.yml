@@ -1,0 +1,51 @@
+name: Keep commit streak
+
+on: 
+  schedule:
+    - cron: '40 18 * * *' # 12:10 AM IST daily
+  workflow_dispatch:
+
+jobs:
+  commit-keeper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set GitHub token for each push acess
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        
+      - name: Check commit from 12:00 AM IST
+        id: check_commit
+        run: |
+          today_utc=$(date -u +"%Y-%m-%d")
+
+          since_date=$(date -u -d "$today_utc 00:00 +0530" --iso-8601=seconds)
+          commit_count=$(git rev-list --count --since="$since_date" HEAD)
+          if [ "$commit_count" -eq 0 ]; then
+            echo "commit_needed=true" >> $GITHUB_OUTPUT
+          else:
+            echo "commit_needed=false" >> $GITHUB_OUTPUT
+          fi
+        
+      - name: Create log file if no commit found today
+        if: steps.check_commit.outputs.commit_needed == 'true'
+        run: |
+          cd $GITHUB_WORKSPACE
+          today=$(date -u +%F)
+          now=$(date -u +%T)
+
+          filename="log_${today}.txt"
+          {
+            echo "Auto-generated log file to maintain commmit streak"
+            echo "Date:$today"
+            echo "Time(UTC):$now"
+          } > "$filename"
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add "$filename"
+          git commit -m "$filename auto-created at $now UTC"
+          git push
