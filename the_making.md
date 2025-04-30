@@ -1,5 +1,34 @@
 # GIT-ACTION
 ---
+### INTRO TO GITHUB ACTIONS
+
+### GitHub Automation Workflows
+
+- This repository contains `GitHub Actions workflows` to automate commit to maintain a daily streak
+- ***GitHub Actions*** is a powerful automation tool built into GitHub that allows you to automate *workflows* for your repository. 
+- Workflows are defined using `YAML files` and can automate tasks like continuous integration (CI), continuous deployment (CD), testing, linting, and more.
+---
+#### Key Concepts of GitHub Actions:
+- `Workflow`: A set of automated steps defined in a YAML file. Workflows are triggered by events like pushes, pull requests, or on a schedule.
+- `Action`: A reusable unit of code that performs a specific task within a workflow. GitHub provides many pre-built actions, or you can create your own.
+
+- `Job`: A collection of steps that run on the same runner (environment). Jobs can run sequentially or in parallel.
+
+- `Step`: A single task that can run commands or use actions in a job.
+
+- `Runner`: A server that runs the workflows. GitHub provides hosted runners, or you can use self-hosted runners.
+
+- `Event`: An occurrence that triggers a workflow, like a push, pull_request, schedule, etc.
+---
+#### Workflows
+
+1. **blank.yml**: trigger using push and pull
+
+2. **commit-keeper.yml**:`main puprpose` creates a commit on 11:30PM if there is no commit till that point of time
+
+3. **hello.yml**:creates a textfile hello on each day at 10:25PM
+---
+
 - yml/yaml is a helps in automate taks like testing,building and deploying code 
 - We can learn this in (*github actions*)[https://docs.github.com/en/actions]
 ---
@@ -57,7 +86,13 @@ minute hour day month day_of_week
 Tue Apr 30 14:35:42 UTC 2025
 
 ```
+- `-u` UTC
+```
+$(date -u +"%Y-%m-%d")
+2025-04-30
+```
 ---
 ### Permissions
 - You enabled "Workflow permissions: Read and write"
 - (in Settings > Actions > General > Workflow permissions).
+---
