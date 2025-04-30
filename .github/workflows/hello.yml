@@ -1,0 +1,39 @@
+name: Daily hello World File
+
+on:
+  schedule:
+    - cron: '40 16 * * *'
+  workflow_dispatch:
+
+jobs:
+  create-hello-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up GitHub token for push access
+        run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      
+      - name: Creating unique hello world file
+        run: |
+          cd $GITHUB_WORKSPACE
+
+          base="hello_world"
+          ext=".txt"
+          filename="$base$ext"
+          count=0
+
+          while [ -f "$filename" ]; do
+            count=$((count+1))
+            filename="${base}${count}${ext}"
+          done
+
+          echo "This file was created automatically on $(date -u)" > "$filename"
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add "$filename"
+          git commit -m "$filename created on $(date -u)"
+          git push
