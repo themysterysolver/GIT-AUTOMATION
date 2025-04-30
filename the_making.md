@@ -1,4 +1,5 @@
 # GIT-ACTION
+---
 - yml/yaml is a helps in automate taks like testing,building and deploying code 
 - We can learn this in (*github actions*)[https://docs.github.com/en/actions]
 ---
@@ -38,3 +39,25 @@ cron: '0 18 * * *'
 - This step tells GitHub Actions to "check out" (download) your repository’s code into the runner (a temporary virtual machine that runs your workflow).
 - ***uses*** is a keyword that tells the workflow to run a reusable action — basically, a predefined set of steps written by someone else.
 ---
+### date -u UTC to IST
+```
+#cron format
+minute hour day month day_of_week
+
+```
+- IST = UTC + 5:30
+- `UTC`- Coordinated universal time
+- `IST` - Indian Standard Time
+```
+# To convert 10:10 PM IST → UTC, subtract 5 hours and 30 minutes
+10:10 PM IST - 5 hours 30 minutes = 4:40 PM UTC
+```
+- prints current date and time
+```
+Tue Apr 30 14:35:42 UTC 2025
+
+```
+---
+### Permissions
+- You enabled "Workflow permissions: Read and write"
+- (in Settings > Actions > General > Workflow permissions).
