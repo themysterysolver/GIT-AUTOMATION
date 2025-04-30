@@ -1,8 +1,8 @@
 name: Daily hello World File
 
 on:
-  schedule:
-    - cron: '50 16 * * *'
+  # schedule:
+  #   - cron: '50 16 * * *'
   workflow_dispatch:
 
 jobs:
