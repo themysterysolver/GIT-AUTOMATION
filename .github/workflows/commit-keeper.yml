@@ -2,7 +2,7 @@ name: Keep commit streak
 
 on: 
   schedule:
-    - cron: '40 18 * * *' # 12:10 AM IST daily
+    - cron: '35 18 * * *' # 12:35 AM IST daily
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
 
           since_date=$(date -u -d "$today_utc 18:30 -1 day" --iso-8601=seconds)
           commit_count=$(git rev-list --count --since="$since_date" HEAD)
-          if [ "$commit_count" -eq 0 ]; then
+          if [ "$commit_count" -eq 3 ]; then
             echo "commit_needed=true" >> $GITHUB_OUTPUT
           else:
             echo "commit_needed=false" >> $GITHUB_OUTPUT
