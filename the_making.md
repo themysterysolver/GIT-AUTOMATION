@@ -2,7 +2,7 @@
 ---
 ### INTRO TO GITHUB ACTIONS
 
-### GitHub Automation Workflows
+#### GitHub Automation Workflows
 
 - This repository contains `GitHub Actions workflows` to automate commit to maintain a daily streak
 - ***GitHub Actions*** is a powerful automation tool built into GitHub that allows you to automate *workflows* for your repository. 
@@ -56,6 +56,7 @@ cron: '0 18 * * *'
 ---
 #### git config user.name and git config user.email
 - They help in git configuration for the commit
+- Required so git commit doesn't fail with identity error.
 - `git config user.name "github-actions"`: Sets the Git username to "github-actions". This is the name that will appear in the commit history.
 - `git config user.email "github-actions@github.com"`: Sets the Git email address to "github-actions@github.com". This is the email associated with the commit
 - **NOTE** Git requires this for everry commit bu thtis is usally handled by your local system.
@@ -87,12 +88,27 @@ Tue Apr 30 14:35:42 UTC 2025
 
 ```
 - `-u` UTC
+- gets the date in `YYYY-MM-DD` format.
 ```
 $(date -u +"%Y-%m-%d")
 2025-04-30
 ```
+- `--pretty=oneline` this makes the commit to show line per commit
+- `wc -l`  **wc** word count **-l** no of lines 
+- **$GITHUB_ENV** stores varaibe so that it cna be used in next step.
+- `fromJson(env.commit_count)` safely converts the string env var to a number
 ---
 ### Permissions
 - You enabled "Workflow permissions: Read and write"
 - (in Settings > Actions > General > Workflow permissions).
+---
+### workflow_dispatch:
+- helps u manually run the flow
+- manuall trigger button to run the workflow
+---
+### on:
+- it defines when the schedule to run
+---
+### mkdir -p
+- creates an parent
 ---
