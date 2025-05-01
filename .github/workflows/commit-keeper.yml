@@ -2,7 +2,7 @@ name: Keep commit streak
 
 on: 
   schedule:
-    - cron: '30 19 * * *' # 1:00 AM IST daily
+    - cron: '15 3  * * *' # 8:45 AM IST daily
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Set GitHub token for each push acess
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-        
+
       - name: Check commit from 12:00 AM IST
         id: check_commit
         run: |
@@ -24,12 +24,15 @@ jobs:
 
           since_date=$(date -u -d "yesterday 18:30" --iso-8601=seconds)
           commit_count=$(git rev-list --count --since="$since_date" HEAD)
-          if [ "$commit_count" -eq 4 ]; then
-            echo "commit_needed=true" >> $GITHUB_OUTPUT
+          if [ "$commit_count" -eq 5 ]; then
+            echo "commit_needed = true" >> $GITHUB_OUTPUT
           else
-            echo "commit_needed=false" >> $GITHUB_OUTPUT
+            echo "commit_needed = false" >> $GITHUB_OUTPUT
           fi
-        
+      
+      - name: Debug commit count
+        run: echo "Commits since last 12 AM IST: ${{ steps.check_commit.outputs.commit_count }}"
+
       - name: Create log file if no commit found today
         if: steps.check_commit.outputs.commit_needed == 'true'
         run: |
@@ -39,7 +42,7 @@ jobs:
 
           filename="log_${today}.txt"
           {
-            echo "Auto-generated log file to maintain commmit streak"
+            echo "Auto-generated log file to maintain commit streak"
             echo "Date:$today"
             echo "Time(UTC):$now"
           } > "$filename"
