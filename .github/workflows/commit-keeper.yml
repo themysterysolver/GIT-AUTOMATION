@@ -24,14 +24,12 @@ jobs:
 
           since_date=$(date -u -d "yesterday 18:30" --iso-8601=seconds)
           commit_count=$(git rev-list --count --since="$since_date" HEAD)
-          if [ "$commit_count" -eq 5 ]; then
+          echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
+          if [ "$commit_count" -eq 6 ]; then
             echo "commit_needed = true" >> $GITHUB_OUTPUT
           else
             echo "commit_needed = false" >> $GITHUB_OUTPUT
           fi
-      
-      - name: Debug commit count
-        run: echo "Commits since last 12 AM IST: ${{ steps.check_commit.outputs.commit_count }}"
 
       - name: Create log file if no commit found today
         if: steps.check_commit.outputs.commit_needed == 'true'
@@ -39,6 +37,8 @@ jobs:
           cd $GITHUB_WORKSPACE
           today=$(date -u +%F)
           now=$(date -u +%T)
+
+          echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
 
           filename="log_${today}.txt"
           {
