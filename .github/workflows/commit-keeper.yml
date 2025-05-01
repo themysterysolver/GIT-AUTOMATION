@@ -13,22 +13,20 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
 
-      - name: Set GitHub token for each push acess
+      - name: Set GitHub token for each push access
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Check commit from 12:00 AM IST
         id: check_commit
         run: |
-          today_utc=$(date -u +"%Y-%m-%d")
-
           since_date=$(date -u -d "yesterday 18:30" --iso-8601=seconds)
           commit_count=$(git rev-list --count --since="$since_date" HEAD)
           echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
-          if [ "$commit_count" -eq 6 ]; then
-            echo "commit_needed = true" >> $GITHUB_OUTPUT
+          if [ "$commit_count" -gt 5 ]; then
+            echo "commit_needed=true" >> $GITHUB_OUTPUT
           else
-            echo "commit_needed = false" >> $GITHUB_OUTPUT
+            echo "commit_needed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create log file if no commit found today
@@ -37,14 +35,12 @@ jobs:
           cd $GITHUB_WORKSPACE
           today=$(date -u +%F)
           now=$(date -u +%T)
-
-          echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
-
           filename="log_${today}.txt"
           {
             echo "Auto-generated log file to maintain commit streak"
             echo "Date:$today"
             echo "Time(UTC):$now"
+            echo "Commits since yesterday 18:30 UTC: ${{ steps.check_commit.outputs.commit_count }}"
           } > "$filename"
 
           git config user.name "github-actions"
