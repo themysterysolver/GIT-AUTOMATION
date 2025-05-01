@@ -1,50 +1,39 @@
-name: Keep commit streak
+name: Daily Log Commit
 
-on: 
+on:
   schedule:
-    - cron: '15 3  * * *' # 8:45 AM IST daily
+    # Scheduled to run every day at 9:40 AM UTC
+    - cron: '40 9 * * *'
   workflow_dispatch:
+    # Allows manual trigger
 
 jobs:
-  commit-keeper:
+  check-and-commit:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set GitHub token for each push access
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+    - name: Set up Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Check commit from 12:00 AM IST
-        id: check_commit
-        run: |
-          since_date=$(date -u -d "yesterday 18:30" --iso-8601=seconds)
-          commit_count=$(git rev-list --count --since="$since_date" HEAD)
-          echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
-          if [ "$commit_count" -gt 5 ]; then
-            echo "commit_needed=true" >> $GITHUB_OUTPUT
-          else
-            echo "commit_needed=false" >> $GITHUB_OUTPUT
-          fi
+    - name: Count commits for today
+      id: count_commits
+      run: |
+        today=$(date +"%Y-%m-%d")
+        commit_count=$(git log --since="$today 00:00" --until="$today 23:59" --pretty=oneline | wc -l)
+        echo "commit_count=$commit_count" >> $GITHUB_ENV
 
-      - name: Create log file if no commit found today
-        if: steps.check_commit.outputs.commit_needed == 'true'
-        run: |
-          cd $GITHUB_WORKSPACE
-          today=$(date -u +%F)
-          now=$(date -u +%T)
-          filename="log_${today}.txt"
-          {
-            echo "Auto-generated log file to maintain commit streak"
-            echo "Date:$today"
-            echo "Time(UTC):$now"
-            echo "Commits since yesterday 18:30 UTC: ${{ steps.check_commit.outputs.commit_count }}"
-          } > "$filename"
-
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add "$filename"
-          git commit -m "$filename auto-created at $now UTC"
-          git push
+    - name: Create a log file if commits are less than 10
+      if: ${{ env.commit_count && fromJson(env.commit_count) < 10 }}
+      run: |
+        date=$(date +"%Y-%m-%d")
+        mkdir -p logs
+        echo "Log created on $date" > logs/log_$date.txt
+        git add logs/log_$date.txt
+        git commit -m "Add log file for $date"
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        git push
