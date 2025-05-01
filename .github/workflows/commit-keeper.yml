@@ -2,7 +2,7 @@ name: Daily Log Commit
 
 on:
   schedule:
-    - cron: '40 9 * * *'
+    - cron: '30 17 * * *'  # 11:00 PM IST
   workflow_dispatch:
 
 jobs:
@@ -25,8 +25,8 @@ jobs:
         commit_count=$(git log --since="$today 00:00" --until="$today 23:59" --pretty=oneline | wc -l)
         echo "commit_count=$commit_count" >> $GITHUB_ENV
 
-    - name: Create a log file if commits are less than 10
-      if: ${{ env.commit_count && fromJson(env.commit_count) < 15 }}
+    - name: Create a log file if commits are less than 5
+      if: ${{ env.commit_count && fromJson(env.commit_count) < 5 }}
       run: |
         date=$(date +"%Y-%m-%d")
         mkdir -p logs
