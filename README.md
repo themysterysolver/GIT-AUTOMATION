@@ -12,10 +12,14 @@ This repository automates commits to GitHub to ensure you don't lose your daily 
 ---
 ### How to use it? ⚙️
 -  `Fork` the repo
+- `commit-keeper.yml` change your `id` and `email`
 - Then change the *permission*  🍴
     - (in ⚙️Settings > Actions > General > Workflow permissions) 
     - You enabled "Workflow permissions: Read and write"
-    
+- Go to GitHub → Settings → Developer Settings → Personal access tokens.[click here](https://github.com/settings/tokens)
+    - Generate a token with:repo scope (to push to the repository)
+    - Save that token as a GitHub Actions secret:
+    - Name it `MY_PERSONAL_TOKEN`
 ---
 ### Repo structure🗂️ 
 ```
