@@ -1,4 +1,4 @@
-name: Daily Log Commit
+name: Keep commit streak
 
 on:
   schedule:
