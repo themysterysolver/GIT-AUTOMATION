@@ -30,7 +30,7 @@ jobs:
       run: |
         date=$(date +"%Y-%m-%d")
         mkdir -p logs
-        echo "Log created on $date" > logs/log_$date.txt
+        echo "Log created on $date at $(date +%H:%M:%S)" > logs/log_$date.txt
         git add logs/log_$date.txt
         git commit -m "Add log file for $date"
         git remote set-url origin https://x-access-token:${{ secrets.MY_PERSONAL_TOKEN }}@github.com/${{ github.repository }}.git
